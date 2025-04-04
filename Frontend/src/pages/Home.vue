@@ -1,30 +1,7 @@
 <template>
   <div class="hero-section font-sans min-h-screen text-white">
-    <!-- Navbar -->
-    <div class="navbar">
-      <!-- Left: Logo -->
-      <div class="navbar-logo">
-        <img src="/OTU2.png" alt="OT Logo" />
-      </div>
-
-      <!-- Center: Icons -->
-      <div class="navbar-icons">
-        <router-link to="/"><i class="fas fa-home"></i></router-link>
-        <router-link to="/search"><i class="fas fa-search"></i></router-link>
-        <router-link to="/calendar"><i class="fas fa-calendar-alt"></i></router-link>
-        <router-link to="/contact"><i class="fas fa-envelope"></i></router-link>
-      </div>
-
-      <!-- Right: View Exams Button -->
-      <div>
-        <router-link to="/exams">
-          <button class="navbar-button">VIEW EXAMS</button>
-        </router-link>
-      </div>
-    </div>
-
     <!-- Hero Section -->
-    <div class="hero-container">
+  <div class="hero-container">
       <!-- Left Side Text -->
       <div class="hero-text">
         <h1 class="hero-welcome">Welcome To</h1>
