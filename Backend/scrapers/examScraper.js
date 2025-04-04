@@ -15,7 +15,10 @@ async function scrapeExams(courseCodeFilter = null, crnFilter = null) {
   const exams = [];
 
   $('table tr').each((i, el) => {
+    // Skip the first two rows
+    if (i < 2) return;
     const row = $(el).find('td');
+
 
     if (row.length) {
       const exam = {
