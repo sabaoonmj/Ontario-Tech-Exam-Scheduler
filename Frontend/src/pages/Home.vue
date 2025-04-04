@@ -4,7 +4,7 @@
     <div class="navbar">
       <!-- Left: Logo -->
       <div class="navbar-logo">
-        <img src="/vite.svg" alt="OT Logo" />
+        <img src="/OTU2.png" alt="OT Logo" />
       </div>
 
       <!-- Center: Icons -->
