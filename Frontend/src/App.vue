@@ -1,8 +1,9 @@
 <template>
   <div class="app">
-    <Topbar />
+    <Topbar @updateTopbarHeight="updateTopbarHeight" />
     <div class="layout">
-      <div class="main-content">
+      <!-- Apply margin-top dynamically based on topbar height, without the extra space -->
+      <div class="main-content" :style="{ marginTop: topbarHeight }">
         <router-view />
       </div>
     </div>
@@ -10,7 +11,15 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import Topbar from './components/Topbar.vue'
+
+const topbarHeight = ref('60px') // Default height for topbar
+
+// Update the height based on whether topbar is hovering
+const updateTopbarHeight = (isHovering) => {
+  topbarHeight.value = isHovering ? '90px' : '60px'
+}
 </script>
 
 <style lang="scss">
@@ -47,12 +56,12 @@ button {
 .app {
   .layout {
     display: flex;
-    padding-top: var(--topbar-height); /* Make space for topbar */
   }
 
   .main-content {
     flex: 1;
     padding: 0rem;
+    transition: margin-top 0.3s ease;
   }
 }
 </style>

@@ -34,19 +34,19 @@
   </div>
 </template>
 
-
-
-
-
 <script setup>
-import { ref } from 'vue'
+import { ref, defineEmits, watch } from 'vue'
 import logoURL from '../assets/logo.png'
 
 const isHovering = ref(false)
+
+// Emit the hover state so parent (App.vue) can adjust layout accordingly
+const emit = defineEmits(['updateTopbarHeight'])
+
+watch(isHovering, (newValue) => {
+  emit('updateTopbarHeight', newValue)
+})
 </script>
-
-
-
 
 <style scoped>
 .topbar {
@@ -62,7 +62,7 @@ const isHovering = ref(false)
   right: 0;
   height: 60px;
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: height 0.3s ease; /* Smooth transition for height change */
 }
 
 .topbar.is-hovering {
@@ -148,8 +148,4 @@ const isHovering = ref(false)
 .navbar-button:hover {
   background-color: var(--primary-alt);
 }
-
-
 </style>
-
-

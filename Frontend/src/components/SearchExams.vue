@@ -68,29 +68,25 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const searchQuery = ref('');
-const exams = ref([
-  {
-    id: 1, semester: 'Winter 2024', course: 'ENGR 1010U', title: 'Engineering Basics',
-    crn: '12345', instructor: 'Dr. Smith', date: 'April 20', start: '9:00 AM',
-    duration: '3h', room: 'A101', location: 'Building A', surname: 'Doe',
-    seating: 'Row 3', amendment: 'None', notes: 'Bring calculator'
-  },
-  {
-    id: 2, semester: 'Winter 2024', course: 'MATH 1020U', title: 'Calculus I',
-    crn: '67890', instructor: 'Prof. Brown', date: 'April 22', start: '1:00 PM',
-    duration: '2h', room: 'B202', location: 'Building B', surname: 'Johnson',
-    seating: 'Row 1', amendment: 'Extra time', notes: 'Graphing calculator allowed'
-  },
-  {
-    id: 3, semester: 'Winter 2024', course: 'COMP 2050U', title: 'Programming Fundamentals',
-    crn: '54321', instructor: 'Dr. White', date: 'April 25', start: '10:00 AM',
-    duration: '2.5h', room: 'C303', location: 'Building C', surname: 'Lee',
-    seating: 'Row 2', amendment: 'None', notes: 'No electronic devices allowed'
+const exams = ref([]);
+
+const fetchExams = async () => {
+  try {
+    const response = await fetch('http://localhost:8080/api/exams'); // Make sure this matches your backend port and route
+    if (!response.ok) throw new Error('Failed to fetch exams');
+    exams.value = await response.json();
+  } catch (error) {
+    console.error('Error fetching exams:', error);
   }
-]);
+};
+
+// Fetch exams when the component is mounted
+onMounted(() => {
+  fetchExams();
+});
 
 const filteredExams = computed(() => {
   const query = searchQuery.value.toLowerCase();
@@ -102,7 +98,7 @@ const filteredExams = computed(() => {
 });
 
 function searchExams() {
-  // Search triggered (optional if using v-model + computed)
+  // Optional: you can trigger filtering manually here, but it's reactive already
 }
 </script>
 
