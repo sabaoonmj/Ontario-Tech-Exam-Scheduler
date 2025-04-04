@@ -1,7 +1,5 @@
 <template>
   <div class="search-exams-page">
-    
-
     <!-- 🔎 Exam Search UI -->
     <div class="content">
       <h1 class="text-3xl font-bold text-center mb-6">Search Exams</h1>
@@ -38,10 +36,11 @@
                 <th>Seating</th>
                 <th>Amendment</th>
                 <th>Notes</th>
+                <th>Save</th> <!-- 💾 New header column -->
               </tr>
             </thead>
             <tbody>
-              <tr v-for="exam in filteredExams" :key="exam.id">
+              <tr v-for="exam in filteredExams" :key="exam.crn">
                 <td>{{ exam.semester }}</td>
                 <td>{{ exam.course }}</td>
                 <td>{{ exam.title }}</td>
@@ -56,6 +55,11 @@
                 <td>{{ exam.seating }}</td>
                 <td>{{ exam.amendment }}</td>
                 <td>{{ exam.notes }}</td>
+                <td>
+                  <button @click="addExam(exam)" class="save-button">
+                    Save
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -69,13 +73,16 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useSavedExams } from '../composables/useSavedExams.js';
 
+
+const { addExam } = useSavedExams();
 const searchQuery = ref('');
 const exams = ref([]);
 
 const fetchExams = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/exams'); // Make sure this matches your backend port and route
+    const response = await fetch('http://localhost:8080/api/exams');
     if (!response.ok) throw new Error('Failed to fetch exams');
     exams.value = await response.json();
   } catch (error) {
@@ -83,7 +90,6 @@ const fetchExams = async () => {
   }
 };
 
-// Fetch exams when the component is mounted
 onMounted(() => {
   fetchExams();
 });
@@ -98,19 +104,17 @@ const filteredExams = computed(() => {
 });
 
 function searchExams() {
-  // Optional: you can trigger filtering manually here, but it's reactive already
+  // Optional manual trigger
 }
 </script>
 
 <style scoped>
-/* Set white background */
 .search-exams-page {
   background: white;
   min-height: 100vh;
   padding: 20px;
 }
 
-/* Center the search bar */
 .search-container {
   display: flex;
   justify-content: center;
@@ -139,7 +143,6 @@ function searchExams() {
   background-color: #e64a19;
 }
 
-/* Style table */
 .table-container {
   overflow-x: auto;
   margin-top: 20px;
@@ -169,5 +172,18 @@ function searchExams() {
 
 .exam-table tr:hover {
   background-color: #ddd;
+}
+
+.save-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-button:hover {
+  background-color: #45a049;
 }
 </style>
