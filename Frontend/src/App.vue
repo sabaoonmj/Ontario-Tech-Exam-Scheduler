@@ -2,7 +2,6 @@
   <div class="app">
     <Topbar />
     <div class="layout">
-      <Sidebar />
       <div class="main-content">
         <router-view />
       </div>
@@ -11,7 +10,6 @@
 </template>
 
 <script setup>
-import Sidebar from './components/Sidebar.vue'
 import Topbar from './components/Topbar.vue'
 </script>
 
