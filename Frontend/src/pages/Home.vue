@@ -1,30 +1,111 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-spirit-navy to-dark-grey text-white">
-    <header class="flex justify-between items-center p-6">
-      <nav class="flex space-x-6">
-        <button class="text-white hover:text-tech-tangerine">Home</button>
-        <button class="text-white hover:text-tech-tangerine">Search</button>
-        <button class="text-white hover:text-tech-tangerine">Calendar</button>
-        <button class="text-white hover:text-tech-tangerine">Contact</button>
-      </nav>
-      <button class="bg-tech-tangerine text-white px-4 py-2 rounded-md hover:bg-future-blue">View Exams</button>
-    </header>
-    
-    <main class="flex flex-col md:flex-row items-center justify-between px-12 py-16">
-      <div class="max-w-lg">
-        <h1 class="text-5xl font-bold text-future-blue">Welcome To <br> Ontario Tech Exam Scheduler!</h1>
-        <p class="mt-4 text-warm-grey">Add your exams to your calendar with ease! Just search, click add, and export...</p>
-        <button class="mt-6 bg-tech-tangerine text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-future-blue">Get Started</button>
-      </div>    
-    </main>
+  <div class="hero-section font-sans min-h-screen text-white">
+    <!-- Navbar -->
+    <div class="navbar">
+      <!-- Left: Logo -->
+      <div class="navbar-logo">
+        <img src="/vite.svg" alt="OT Logo" />
+      </div>
+
+      <!-- Center: Icons -->
+      <div class="navbar-icons">
+        <router-link to="/"><i class="fas fa-home"></i></router-link>
+        <router-link to="/search"><i class="fas fa-search"></i></router-link>
+        <router-link to="/calendar"><i class="fas fa-calendar-alt"></i></router-link>
+        <router-link to="/contact"><i class="fas fa-envelope"></i></router-link>
+      </div>
+
+      <!-- Right: View Exams Button -->
+      <div>
+        <router-link to="/exams">
+          <button class="navbar-button">VIEW EXAMS</button>
+        </router-link>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-container">
+      <!-- Left Side Text -->
+      <div class="hero-text">
+        <h1 class="hero-welcome">Welcome To</h1>
+        <h2 class="hero-title">Ontario Tech Exam Scheduler!</h2>
+        <p>
+          Add your exams to your calendar with ease!<br />
+          Just search, click add, and export...
+        </p>
+        <router-link to="/search">
+          <button class="btn-orange">GET STARTED</button>
+        </router-link>
+      </div>
+
+      <!-- Right Side Image -->
+      <div class="hero-image">
+        <img :src="handPencil" alt="Hand with pencil" />
+      </div>
+    </div>
   </div>
 </template>
 
-
+<script setup>
+import handPencil from '../assets/hand-pencil.png';
+</script>
 
 <style scoped>
-.text-future-blue { color: var(--future-blue); }
-.text-warm-grey { color: var(--warm-grey); }
-.bg-tech-tangerine { background-color: var(--tech-tangerine); }
-.bg-future-blue { background-color: var(--future-blue); }
+.hero-section {
+  background: linear-gradient(to bottom right, var(--spirit-navy), var(--dark-grey));
+}
+
+/* Layout */
+.hero-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4rem 3rem 6rem;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+.hero-text {
+  max-width: 500px;
+  color: white;
+}
+
+.hero-welcome {
+  font-size: 2.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1.8rem;
+  color: white;
+}
+
+.hero-text p {
+  font-size: 2.00rem;
+  color: #e5e5e5;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.hero-image img {
+  max-width: 1000px;
+  height: auto;
+  margin-left: -90px;
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>

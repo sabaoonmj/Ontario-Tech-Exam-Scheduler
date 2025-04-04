@@ -1,198 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===============================
+   🎨 Ontario Tech Brand Colors
+   =============================== */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --future-blue: #002f6c;
+  --simcoe-blue: #0078c1;
+  --tech-tangerine: #f7632d;
+  --spirit-navy: #00283c;
+  --dark-grey: #5b6770;
+  --warm-grey: #aca39a;
+  --white: #ffffff;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --header-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* ===============================
+   🌐 Base Styling
+   =============================== */
+body {
+  font-family: var(--header-font);
+  background-color: var(--white);
+  margin: 0;
+  padding: 0;
+  color: var(--dark-grey);
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  text-decoration: none;
+  color: inherit;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  font-family: inherit;
 }
 
-.card {
-  padding: 2em;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
+/* ===============================
+   🧭 Navbar
+   =============================== */
+.navbar {
+  background-color: var(--future-blue);
+  padding: 1.25rem 2rem;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  position: relative;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Logo */
+.navbar-logo img {
+  height: 48px;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* Icons Centered */
+.navbar-icons {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2.5rem;
+  font-size: 1.25rem;
+  color: var(--white);
 }
 
-.card {
-  padding: 2em;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.navbar-icons i {
+  width: 24px;
   text-align: center;
+  transition: color 0.2s ease;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.navbar-icons i:hover {
+  color: var(--tech-tangerine);
 }
 
-:root {
-  --future-blue: #003C71;
-  --simcoe-blue: #0077CA;
-  --tech-tangerine: #E75D2A;
-  --warm-grey: #ACA39A;
-  --cool-grey: #A7A8AA;
-  --dark-grey: #5B6770;
-  --spirit-navy: #00283C;
-  --medium-blue: #005793;
-  --darker-blue: #042a4b;
+/* VIEW EXAMS Button */
+.navbar-button {
+  background-color: var(--tech-tangerine);
+  color: white;
+  padding: 0.6rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.3s ease;
 }
 
-/* Example usage */
-.text-future-blue { color: var(--future-blue); }
-.bg-future-blue { background-color: var(--future-blue); }
+.navbar-button:hover {
+  background-color: #c24a1a;
+}
 
-.text-simcoe-blue { color: var(--simcoe-blue); }
-.bg-simcoe-blue { background-color: var(--simcoe-blue); }
+/* ===============================
+   🟧 Shared Orange CTA Button
+   =============================== */
+.btn-orange {
+  background-color: var(--tech-tangerine);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.3s ease;
+}
 
-.text-tech-tangerine { color: var(--tech-tangerine); }
-.bg-tech-tangerine { background-color: var(--tech-tangerine); }
+.btn-orange:hover {
+  background-color: #c24a1a;
+}
 
-.text-warm-grey { color: var(--warm-grey); }
-.bg-warm-grey { background-color: var(--warm-grey); }
-
-.text-cool-grey { color: var(--cool-grey); }
-.bg-cool-grey { background-color: var(--cool-grey); }
-
-.text-dark-grey { color: var(--dark-grey); }
-.bg-dark-grey { background-color: var(--dark-grey); }
-
-.text-spirit-navy { color: var(--spirit-navy); }
-.bg-spirit-navy { background-color: var(--spirit-navy); }
-
-.text-medium-blue { color: var(--medium-blue); }
-.bg-medium-blue { background-color: var(--medium-blue); }
-
-.text-darker-blue { color: var(--darker-blue); }
-.bg-darker-blue { background-color: var(--darker-blue); }
+/* ===============================
+   🌅 Hero Background Utility
+   =============================== */
+.hero-section {
+  background: linear-gradient(to bottom right, var(--spirit-navy), var(--dark-grey));
+  color: white;
+  min-height: 100vh;
+  padding: 0;
+}

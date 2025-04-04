@@ -1,31 +1,17 @@
 <template>
-  <div class="calendar">
-    <h2>Exam Calendar</h2>
-    <!-- Render calendar here -->
-    <!-- Use a calendar library or custom solution -->
-  </div>
+  <FullCalendar :options="calendarOptions" />
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      // Calendar data
-    };
-  },
-  methods: {
-    fetchCalendarData() {
-      // Fetch calendar data (exams)
-    }
-  },
-  mounted() {
-    this.fetchCalendarData();
-  }
+<script setup>
+import FullCalendar from '@fullcalendar/vue3';
+import dayGridPlugin from '@fullcalendar/daygrid';
+
+const calendarOptions = {
+  plugins: [dayGridPlugin],
+  initialView: 'dayGridMonth',
+  events: [
+    { title: 'ENGR 1200 Exam', date: '2025-04-20' },
+    { title: 'MATH 1010 Final', date: '2025-04-22' }
+  ]
 };
 </script>
-
-<style scoped>
-.calendar {
-  padding: 1rem;
-}
-</style>
