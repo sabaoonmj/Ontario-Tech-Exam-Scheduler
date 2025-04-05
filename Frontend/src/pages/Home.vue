@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import handPencil from '../assets/hand-pencil.png';
+import handPencil from '../assets/OTU-background.png';
 </script>
 
 <style scoped>

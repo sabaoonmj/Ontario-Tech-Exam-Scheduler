@@ -76,7 +76,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import $ from 'jquery'; // Import jQuery
+import $ from 'jquery';
+window.$ = window.jQuery = $; // Ensure global jQuery support
 import { useSavedExams } from '../composables/useSavedExams.js';
 
 // Declare reactive variables for the search query and exams list
