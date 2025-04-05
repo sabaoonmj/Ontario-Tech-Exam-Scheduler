@@ -73,27 +73,34 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import $ from 'jquery'; // Import jQuery
 import { useSavedExams } from '../composables/useSavedExams.js';
 
-
+// Declare reactive variables for the search query and exams list
 const { addExam } = useSavedExams();
 const searchQuery = ref('');
 const exams = ref([]);
 
-const fetchExams = async () => {
-  try {
-    const response = await fetch('http://localhost:8080/api/exams');
-    if (!response.ok) throw new Error('Failed to fetch exams');
-    exams.value = await response.json();
-  } catch (error) {
-    console.error('Error fetching exams:', error);
-  }
+// Function to fetch exams using AJAX (with jQuery)
+const fetchExams = () => {
+  $.ajax({
+    url: 'http://localhost:8080/api/exams', // The backend API endpoint
+    type: 'GET', // Method type
+    success: function(data) {
+      exams.value = data; // Assign fetched data to exams
+    },
+    error: function(error) {
+      console.error('Error fetching exams:', error);
+    }
+  });
 };
 
+// Fetch exams when the component is mounted
 onMounted(() => {
   fetchExams();
 });
 
+// Computed property to filter exams based on the search query
 const filteredExams = computed(() => {
   const query = searchQuery.value.toLowerCase();
   return exams.value.filter(
@@ -103,10 +110,12 @@ const filteredExams = computed(() => {
   );
 });
 
+// Optional manual trigger function for searching exams
 function searchExams() {
-  // Optional manual trigger
+  // This could be tied to an event if you want manual triggering.
 }
 </script>
+
 
 <style scoped>
 .search-exams-page {
