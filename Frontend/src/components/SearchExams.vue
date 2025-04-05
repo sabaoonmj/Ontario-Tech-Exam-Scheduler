@@ -40,7 +40,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="exam in filteredExams" :key="exam.crn">
+              <tr v-for="exam in filteredExams" :key="exam.id">
                 <td>{{ exam.semester }}</td>
                 <td>{{ exam.course }}</td>
                 <td>{{ exam.title }}</td>
