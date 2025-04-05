@@ -40,11 +40,7 @@
               </tr>
             </thead>
             <tbody>
-             <tr v-for="exam in filteredExams"
-              :key="exam.id"
-               :class="{ 'saved-row': isSaved(exam) }"
-                >
-
+              <tr v-for="exam in filteredExams" :key="exam.id" :class="{ 'saved-row': isSaved(exam) }">
                 <td>{{ exam.semester }}</td>
                 <td>{{ exam.course }}</td>
                 <td>{{ exam.title }}</td>
@@ -60,9 +56,7 @@
                 <td>{{ exam.amendment }}</td>
                 <td>{{ exam.notes }}</td>
                 <td>
-                  <button @click="addExam(exam)" class="save-button">
-                    Save
-                  </button>
+                  <button @click="handleAddExam(exam)" class="save-button">Save</button>
                 </td>
               </tr>
             </tbody>
@@ -71,6 +65,11 @@
       </div>
 
       <div v-else class="mt-8 text-center text-gray-500">No exams found.</div>
+    </div>
+
+    <!-- Notification -->
+    <div v-if="notificationVisible" class="notification">
+      <p>{{ notificationMessage }}</p>
     </div>
   </div>
 </template>
@@ -87,7 +86,6 @@ const isSaved = (exam) => {
   return savedExams.value.some(e => isSameExam(e, exam));
 };
 
-
 const isSameExam = (a, b) => {
   return (
     a.course === b.course &&
@@ -98,9 +96,12 @@ const isSameExam = (a, b) => {
   );
 };
 
-
 const searchQuery = ref('');
 const exams = ref([]);
+
+// Notification states
+const notificationVisible = ref(false);
+const notificationMessage = ref('');
 
 // Function to fetch exams using AJAX (with jQuery)
 const fetchExams = () => {
@@ -135,8 +136,19 @@ const filteredExams = computed(() => {
 function searchExams() {
   // This could be tied to an event if you want manual triggering.
 }
-</script>
 
+// Function to handle saving an exam and showing the notification
+function handleAddExam(exam) {
+  addExam(exam); // Save the exam
+  notificationMessage.value = `You have added the exam "${exam.title}" to your saved exams. Good Luck with your exams!`; 
+  notificationVisible.value = true; // Show the notification
+
+  // Hide the notification after 3 seconds
+  setTimeout(() => {
+    notificationVisible.value = false;
+  }, 3000);
+}
+</script>
 
 <style scoped>
 .search-exams-page {
@@ -172,6 +184,7 @@ function searchExams() {
 .search-button:hover {
   background-color: #e64a19;
 }
+
 .saved-row {
   background-color: #d4edda !important; /* light green */
 }
@@ -218,5 +231,19 @@ function searchExams() {
 
 .save-button:hover {
   background-color: #45a049;
+}
+
+/* Notification styles */
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  z-index: 1000;
 }
 </style>
