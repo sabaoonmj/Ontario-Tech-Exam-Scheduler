@@ -40,7 +40,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="exam in filteredExams" :key="exam.id">
+             <tr v-for="exam in filteredExams"
+              :key="exam.id"
+               :class="{ 'saved-row': isSaved(exam) }"
+                >
+
                 <td>{{ exam.semester }}</td>
                 <td>{{ exam.course }}</td>
                 <td>{{ exam.title }}</td>
@@ -77,7 +81,24 @@ import $ from 'jquery'; // Import jQuery
 import { useSavedExams } from '../composables/useSavedExams.js';
 
 // Declare reactive variables for the search query and exams list
-const { addExam } = useSavedExams();
+const { addExam, savedExams } = useSavedExams();
+
+const isSaved = (exam) => {
+  return savedExams.value.some(e => isSameExam(e, exam));
+};
+
+
+const isSameExam = (a, b) => {
+  return (
+    a.course === b.course &&
+    a.room === b.room &&
+    a.instructor === b.instructor &&
+    a.surname === b.surname &&
+    a.crn === b.crn
+  );
+};
+
+
 const searchQuery = ref('');
 const exams = ref([]);
 
@@ -150,6 +171,9 @@ function searchExams() {
 
 .search-button:hover {
   background-color: #e64a19;
+}
+.saved-row {
+  background-color: #d4edda !important; /* light green */
 }
 
 .table-container {
