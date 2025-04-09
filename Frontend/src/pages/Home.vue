@@ -30,7 +30,7 @@
 <style scoped>
 .hero-section {
   position: relative;
-  min-height: 93.5vh;
+  min-height: 95vh;
   overflow: hidden;
   display: flex;
   align-items: center;
