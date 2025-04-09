@@ -39,6 +39,7 @@ const calendarContainer = ref(null)
 const currentDate = ref(new Date())
 const today = new Date()
 
+// You might want to adjust these dimensions or compute them dynamically based on container size.
 const width = 700
 const height = 500
 const cellSize = 80
@@ -223,29 +224,25 @@ function importExamToGoogleCalendar(exam) {
 }
 
 function convertTo24HourFormat(timeString) {
-  const timeMap = {
-    "Noon": "12:00",
-    "Midnight": "00:00",
-    "AM": "AM",
-    "PM": "PM"
-  };
-
+  // Updated conversion using standard parsing with zero padding.
   if (timeString.includes("p.m.") || timeString.includes("PM")) {
-    let time = timeString.split(" ")[0];  // Extract the time part
+    let time = timeString.split(" ")[0]; // Extract the time part
     let [hours, minutes] = time.split(":");
-
-    if (parseInt(hours) < 12) {
-      hours = parseInt(hours) + 12; // Convert PM hours
+    hours = parseInt(hours);
+    if (hours < 12) {
+      hours += 12; // Convert PM hours
     }
-    return `${hours}:${minutes}`;
+    const paddedHours = hours.toString().padStart(2, "0");
+    return `${paddedHours}:${minutes}`;
   } else if (timeString.includes("a.m.") || timeString.includes("AM")) {
     let time = timeString.split(" ")[0]; // Extract the time part
     let [hours, minutes] = time.split(":");
-    
-    if (parseInt(hours) === 12) {
-      hours = "00";  // Convert 12 AM to 00
+    hours = parseInt(hours);
+    if (hours === 12) {
+      hours = 0;  // Convert 12 AM to 00
     }
-    return `${hours}:${minutes}`;
+    const paddedHours = hours.toString().padStart(2, "0");
+    return `${paddedHours}:${minutes}`;
   }
 
   if (timeString === "Noon") return "12:00";
@@ -322,12 +319,16 @@ watch(selectedDate, drawCalendar)
   background-color: #ddd;
 }
 
+/* Updated layout to center calendar */
 .calendar-and-sidebar {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1000px;
 }
 
-/* Sidebar styling */
+/* Sidebar styling for desktop */
 .side-panel {
   width: 300px;
   padding: 20px;
@@ -342,6 +343,13 @@ watch(selectedDate, drawCalendar)
   z-index: 1001;
 }
 
+/* Remove dots from the exam list */
+.side-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .side-panel h3 {
   margin-top: 0;
   font-size: 20px;
@@ -350,14 +358,6 @@ watch(selectedDate, drawCalendar)
   margin-bottom: 20px;
 }
 
-/* Remove dots from the exam list */
-.side-panel ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* Exam title styling */
 .exam-title {
   font-weight: 600;
   font-size: 16px;
@@ -417,17 +417,27 @@ button:active {
   width: 100%;
 }
 
-.import-button-container button {
-  background-color: #34a853;
-  width: 80%;
-  max-width: 250px;
-}
-
-.import-button-container button:hover {
-  background-color: #2e8e47;
-}
-
-.import-button-container button:active {
-  background-color: #267a3b;
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .calendar-and-sidebar {
+    flex-direction: column;
+    align-items: center;
+  }
+  /* Make the side panel appear below the calendar on small screens */
+  .side-panel {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: none;
+    border-left: none;
+    margin-top: 20px;
+  }
+  .calendar {
+    width: 100%;
+    max-width: 700px;
+  }
 }
 </style>
