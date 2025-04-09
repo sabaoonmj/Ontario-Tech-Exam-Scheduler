@@ -5,14 +5,24 @@
       <h2>{{ monthName }} {{ currentYear }}</h2>
       <button @click="nextMonth">›</button>
     </div>
-    <div ref="calendarContainer" class="calendar"></div>
-    <div
-  v-if="tooltip.visible"
-  class="tooltip"
-  :style="{ top: `${tooltip.y}px`, left: `${tooltip.x}px` }"
->
-  {{ tooltip.text }}
-</div>
+    <div class="calendar-and-sidebar">
+      <div ref="calendarContainer" class="calendar"></div>
+      <div v-if="selectedDate" class="side-panel">
+        <h3>Exams on {{ formattedSelectedDate }}</h3>
+        <div v-if="selectedExams.length">
+          <ul>
+            <li v-for="(exam, index) in selectedExams" :key="index">
+              <div class="exam-title">{{ exam.title }}</div>
+              <div class="exam-start"><strong>Time:</strong> {{ exam.start }}</div>
+              <div class="exam-room"><strong>Location:</strong> {{ exam.room }}</div>
+            </li>
+          </ul>
+        </div>
+        <div v-else>
+          No exams scheduled for this day.
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -21,7 +31,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import * as d3 from 'd3'
 import { useSavedExams } from '../composables/useSavedExams.js'
 
-const { savedExams } = useSavedExams() // Assuming this fetches the saved exams data
+const { savedExams } = useSavedExams() // Fetches the saved exams data
 
 const calendarContainer = ref(null)
 const currentDate = ref(new Date())
@@ -41,23 +51,32 @@ const monthName = computed(() =>
 // Reactive variable to store the calendar events dynamically
 const events = ref([])
 
-// Dynamically populate events with the saved exams data
+// New reactive variables for the selected date and its exams
+const selectedDate = ref(null)
+const selectedExams = ref([])
+
+const formattedSelectedDate = computed(() =>
+  selectedDate.value
+    ? selectedDate.value.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+    : ''
+)
+
+// Map saved exams data to our events array using the current year.
+// Now we use exam.start and exam.room
 watch(savedExams, (newExams) => {
   events.value = newExams.map(exam => {
-    const examDate = new Date(exam.date);
-    const monthNumber = examDate.getMonth() + 1; // Month is 0-indexed, so we add 1
-    const dayNumber = examDate.getDate();
-    const year = currentYear.value; // Use the current year
-
+    const examDate = new Date(exam.date)
+    const monthNumber = examDate.getMonth() + 1 // JavaScript month is 0-indexed, so add 1
+    const dayNumber = examDate.getDate()
+    const year = currentYear.value // Use the current year
     return {
-      date: new Date(year, monthNumber - 1, dayNumber), // Set date using current year
-      title: `${exam.course} Exam`, // Use course code + "Exam"
-    };
-  });
-}, { immediate: true });
-
-
-const tooltip = ref({ visible: false, x: 0, y: 0, text: '' })
+      date: new Date(year, monthNumber - 1, dayNumber),
+      title: `${exam.course} Exam`,
+      start: exam.start,
+      room: exam.room
+    }
+  })
+}, { immediate: true })
 
 function drawCalendar() {
   const year = currentYear.value
@@ -87,34 +106,27 @@ function drawCalendar() {
     .attr('fill', '#555')
     .attr('font-weight', 'bold')
 
+  // Create each day cell
   for (let i = 0; i < daysInMonth; i++) {
     const day = i + 1
     const col = (i + firstDay) % 7
     const row = Math.floor((i + firstDay) / 7) + 1
 
+    const dateObj = new Date(year, month, day)
     const isToday =
       day === today.getDate() &&
       month === today.getMonth() &&
       year === today.getFullYear()
-
-    const dateObj = new Date(year, month, day)
+    const isSelected = selectedDate.value && dateObj.toDateString() === selectedDate.value.toDateString()
     const hasEvent = events.value.some(e => e.date.toDateString() === dateObj.toDateString())
-    const eventText = events.value.find(e => e.date.toDateString() === dateObj.toDateString())?.title
 
     const cellGroup = group
       .append('g')
       .attr('cursor', hasEvent ? 'pointer' : 'default')
-      .on('click', (event) => {
-        if (hasEvent) {
-          tooltip.value = {
-            visible: true,
-            x: event.pageX,
-            y: event.pageY - 20,
-            text: eventText
-          }
-        } else {
-          tooltip.value.visible = false
-        }
+      .on('click', function(event) {
+        // Update the selected day and its exams (green highlight + side panel)
+        selectedDate.value = dateObj
+        selectedExams.value = events.value.filter(e => e.date.toDateString() === dateObj.toDateString())
       })
 
     cellGroup
@@ -125,7 +137,8 @@ function drawCalendar() {
       .attr('height', cellSize - 10)
       .attr('rx', 10)
       .attr('ry', 10)
-      .attr('fill', isToday ? '#ffe082' : '#f5f5f5')
+      // If the cell is selected, highlight it green; otherwise show today's or default color
+      .attr('fill', isSelected ? '#81c784' : (isToday ? '#ffe082' : '#f5f5f5'))
       .attr('stroke', '#ccc')
 
     cellGroup
@@ -136,6 +149,7 @@ function drawCalendar() {
       .attr('font-size', '18px')
       .attr('fill', '#333')
 
+    // Mark cell with a small circle if there's an event
     if (hasEvent) {
       cellGroup
         .append('circle')
@@ -151,26 +165,24 @@ function prevMonth() {
   const newDate = new Date(currentDate.value)
   newDate.setMonth(newDate.getMonth() - 1)
   currentDate.value = newDate
-  tooltip.value.visible = false
+  selectedDate.value = null
+  selectedExams.value = []
 }
 
 function nextMonth() {
   const newDate = new Date(currentDate.value)
   newDate.setMonth(newDate.getMonth() + 1)
   currentDate.value = newDate
-  tooltip.value.visible = false
+  selectedDate.value = null
+  selectedExams.value = []
 }
 
 onMounted(drawCalendar)
 watch(currentDate, drawCalendar)
-
+watch(selectedDate, drawCalendar)
 </script>
 
-
 <style scoped>
-.previous-month{
-  display: flex;
-}
 .calendar-wrapper {
   display: flex;
   flex-direction: column;
@@ -207,6 +219,11 @@ watch(currentDate, drawCalendar)
   background-color: #ddd;
 }
 
+.calendar-and-sidebar {
+  display: flex;
+  align-items: flex-start;
+}
+
 .calendar {
   background: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -214,16 +231,30 @@ watch(currentDate, drawCalendar)
   border-radius: 12px;
 }
 
-.tooltip {
-  position: absolute;
-  background: #333;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-  pointer-events: none;
-  white-space: nowrap;
-  z-index: 1000;
-  transform: translateX(-50%);
+.side-panel {
+  margin-left: 20px;
+  padding: 10px;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  min-width: 200px;
+}
+
+/* Remove dots from the exam list */
+.side-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Optional: Style for individual exam details */
+.side-panel li {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.side-panel li:last-child {
+  border-bottom: none;
 }
 </style>
