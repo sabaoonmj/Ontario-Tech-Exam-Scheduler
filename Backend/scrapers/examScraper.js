@@ -13,14 +13,15 @@ async function scrapeExams(courseCodeFilter = null, crnFilter = null) {
   const $ = cheerio.load(content);
 
   const exams = [];
+  const rows = $('table tr');
 
-  $('table tr').each((i, el) => {
-    // Skip the first two rows
-    if (i < 2) return;
+  rows.each((i, el) => {
+    // Skip the first two rows and the last row 
+    if (i < 2 || i === rows.length - 1) return;
+
     const row = $(el).find('td');
-
-
     if (row.length) {
+      // Extract the data from each column, the indexes are based on the table from the website
       const exam = {
         semester: $(row[0]).text().trim(),
         course: $(row[1]).text().trim(),

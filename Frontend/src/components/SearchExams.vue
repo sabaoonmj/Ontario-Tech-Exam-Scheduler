@@ -33,9 +33,7 @@
                 <th>Room</th>
                 <th>Location</th>
                 <th>Surname</th>
-                <th>Seating</th>
-                <th>Amendment</th>
-                <th>Notes</th>
+                
                 <th>Save</th> <!-- 💾 New header column -->
               </tr>
             </thead>
@@ -52,9 +50,7 @@
                 <td>{{ exam.room }}</td>
                 <td>{{ exam.location }}</td>
                 <td>{{ exam.surname }}</td>
-                <td>{{ exam.seating }}</td>
-                <td>{{ exam.amendment }}</td>
-                <td>{{ exam.notes }}</td>
+              
                 <td>
                   <button @click="handleAddExam(exam)" class="save-button">Save</button>
                 </td>
