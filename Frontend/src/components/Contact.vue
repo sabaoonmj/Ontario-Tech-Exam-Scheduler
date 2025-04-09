@@ -3,11 +3,12 @@
     <div class="contact-card">
       <h2 class="contact-title">Contact Us</h2>
       <form class="contact-form" @submit.prevent="sendMessage">
-        <input type="text" v-model="name" placeholder="Name" class="contact-input" />
-        <input type="email" v-model="email" placeholder="Email" class="contact-input" />
-        <textarea v-model="message" placeholder="Message" class="contact-textarea"></textarea>
+        <input type="text" v-model="name" placeholder="Name" class="contact-input" required />
+        <input type="email" v-model="email" placeholder="Email" class="contact-input" required />
+        <textarea v-model="message" placeholder="Message" class="contact-textarea" required></textarea>
         <button type="submit" class="contact-button">Send Message</button>
       </form>
+
       <!-- Confirmation message -->
       <div v-if="sent" class="confirmation-message">
         <p>Your message has been sent successfully!</p>
@@ -18,23 +19,41 @@
 
 <script setup>
 import { ref } from 'vue'
+import emailjs from '@emailjs/browser'
 
-// Define the form fields and sent status
+// Form fields
 const name = ref('')
 const email = ref('')
 const message = ref('')
 const sent = ref(false)
 
+// Send email via EmailJS
 const sendMessage = () => {
-  // Here you would typically send the form data to the server
+  const templateParams = {
+    name: name.value,
+    email: email.value,
+    message: message.value
+  }
 
-  // For now, we'll simulate a successful send
-  sent.value = true
-
-  // Hide the confirmation message after 3 seconds
-  setTimeout(() => {
-    sent.value = false
-  }, 3000)
+  emailjs.send(
+    'service_f7pznfp',     // Replace with your EmailJS service ID
+    'template_gzfn7yl',    // Replace with your EmailJS template ID
+    templateParams,
+    'UE1k4GAMae1eMVWrn'      // Replace with your EmailJS public key
+  )
+  .then(() => {
+    sent.value = true
+    name.value = ''
+    email.value = ''
+    message.value = ''
+    setTimeout(() => {
+      sent.value = false
+    }, 3000)
+  })
+  .catch((error) => {
+    console.error('EmailJS error:', error)
+    alert('Failed to send message. Please try again.')
+  })
 }
 </script>
 
@@ -54,7 +73,7 @@ const sendMessage = () => {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 600px; /* Increase the max width of the box */
+  max-width: 600px;
   min-height: 400px;
   display: flex;
   flex-direction: column;
@@ -133,8 +152,4 @@ const sendMessage = () => {
     opacity: 1;
   }
 }
-
-
 </style>
-
-
