@@ -130,7 +130,7 @@ function toggleSidebar() {
 
 .navbar-icons {
   display: flex;
-  gap: 3rem;
+  gap: 7rem;
   align-items: center;
   justify-content: center;
   flex: 1;
@@ -178,6 +178,16 @@ function toggleSidebar() {
 .navbar-button:hover {
   background-color: var(--primary-alt);
 }
+
+.router-link-exact-active {
+  color:  #f97316;
+}
+
+.router-link-exact-active i {
+  color:  #f97316;
+}
+
+
 
 /* Sidebar Styles */
 .sidebar {
