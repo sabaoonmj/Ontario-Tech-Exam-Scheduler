@@ -7,10 +7,10 @@
       @mouseenter="isHovering = true"
       @mouseleave="isHovering = false"
     >
-      <!-- Left: Logo -->
-      <div class="navbar-logo">
+      <!-- Left: Logo (clickable now!) -->
+      <router-link to="/" class="navbar-logo">
         <img :src="logoURL" alt="OT Logo" />
-      </div>
+      </router-link>
 
       <!-- Hamburger (mobile only) -->
       <div class="hamburger" @click="toggleSidebar">
@@ -114,7 +114,7 @@ function toggleSidebar() {
 }
 
 .navbar-logo img {
-  height: 40px;
+  height: 65px;
 }
 
 .hamburger {
@@ -176,7 +176,7 @@ function toggleSidebar() {
 }
 
 .navbar-button:hover {
-  background-color: var(--primary-alt);
+  background-color: #ea580c;
 }
 
 .router-link-exact-active {
@@ -186,8 +186,6 @@ function toggleSidebar() {
 .router-link-exact-active i {
   color:  #f97316;
 }
-
-
 
 /* Sidebar Styles */
 .sidebar {

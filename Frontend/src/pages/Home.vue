@@ -17,7 +17,7 @@
         <h2 class="hero-title animate-fade-in-up delay-2">Ontario Tech Exam Scheduler!</h2>
         <p class="animate-fade-in-up delay-3">
           Add your exams to your calendar with ease!<br />
-          Just search, click save, and export...
+          Just search, click save, and import...
         </p>
         <router-link to="/search" class="animate-fade-in-up delay-4">
           <button class="btn-orange">GET STARTED</button>

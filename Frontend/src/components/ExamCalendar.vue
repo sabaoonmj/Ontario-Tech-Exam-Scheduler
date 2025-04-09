@@ -63,17 +63,16 @@ const formattedSelectedDate = computed(() =>
 // Map saved exams data to our events array
 watch(savedExams, (newExams) => {
   events.value = newExams.map(exam => {
-  const examDate = new Date(exam.date);
-  const year = currentYear.value;
-  return {
-    date: new Date(year, examDate.getMonth(), examDate.getDate()),
-    title: `${exam.course} Exam`,
-    start: exam.start,
-    duration: exam.duration,
-    room: exam.room
-  };
-});
-
+    const examDate = new Date(exam.date);
+    const year = currentYear.value;
+    return {
+      date: new Date(year, examDate.getMonth(), examDate.getDate()),
+      title: `${exam.course} Exam`,
+      start: exam.start,
+      duration: exam.duration,
+      room: exam.room
+    };
+  });
 }, { immediate: true })
 
 function drawCalendar() {
@@ -82,17 +81,15 @@ function drawCalendar() {
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   const firstDay = new Date(year, month, 1).getDay()
 
- const totalRows = Math.ceil((daysInMonth + firstDay) / 7);
-const calculatedHeight = totalRows * cellSize + 80; 
+  const totalRows = Math.ceil((daysInMonth + firstDay) / 7);
+  const calculatedHeight = totalRows * cellSize + 80; 
 
-const svg = d3
-  .select(calendarContainer.value)
-  .html('')
-  .append('svg')
-  .attr('width', width)
-  .attr('height', height + 100); // 💡 Increased height to prevent cutoff
-
-
+  const svg = d3
+    .select(calendarContainer.value)
+    .html('')
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height + 100); // Increased height to prevent cutoff
 
   const group = svg.append('g').attr('transform', `translate(20, 40)`)
 
@@ -128,7 +125,13 @@ const svg = d3
       .attr('cursor', hasEvent ? 'pointer' : 'default')
       .on('click', function(event) {
         selectedDate.value = dateObj
-        selectedExams.value = events.value.filter(e => e.date.toDateString() === dateObj.toDateString())
+        selectedExams.value = events.value
+          .filter(e => e.date.toDateString() === dateObj.toDateString())
+          .sort((a, b) => {
+            const aTime = convertTo24HourFormat(a.start);
+            const bTime = convertTo24HourFormat(b.start);
+            return aTime.localeCompare(bTime);
+          });
       })
 
     cellGroup
@@ -186,7 +189,7 @@ function importExamToGoogleCalendar(exam) {
     return;
   }
 
-  const startDateTime = convertToDate(exam.date, exam.start); // Updated to use exam.date
+  const startDateTime = convertToDate(exam.date, exam.start);
   const endDateTime = calculateEndTime(startDateTime, exam.duration);
 
   if (isNaN(startDateTime) || isNaN(endDateTime)) {
@@ -195,24 +198,21 @@ function importExamToGoogleCalendar(exam) {
   }
 
   function calculateEndTime(startDate, duration) {
-  const endDate = new Date(startDate);
+    const endDate = new Date(startDate);
+    const hourMatch = duration.match(/(\d+)\s*hour/);
+    const minuteMatch = duration.match(/(\d+)\s*min|minute/);
+    const colonMatch = duration.match(/(\d+):(\d+)/); // e.g., "2:30"
 
-  // Try to extract hours and minutes from duration string
-  const hourMatch = duration.match(/(\d+)\s*hour/);
-  const minuteMatch = duration.match(/(\d+)\s*min|minute/);
-  const colonMatch = duration.match(/(\d+):(\d+)/); // e.g., "2:30"
+    if (colonMatch) {
+      endDate.setHours(endDate.getHours() + parseInt(colonMatch[1], 10));
+      endDate.setMinutes(endDate.getMinutes() + parseInt(colonMatch[2], 10));
+    } else {
+      if (hourMatch) endDate.setHours(endDate.getHours() + parseInt(hourMatch[1], 10));
+      if (minuteMatch) endDate.setMinutes(endDate.getMinutes() + parseInt(minuteMatch[1], 10));
+    }
 
-  if (colonMatch) {
-    endDate.setHours(endDate.getHours() + parseInt(colonMatch[1], 10));
-    endDate.setMinutes(endDate.getMinutes() + parseInt(colonMatch[2], 10));
-  } else {
-    if (hourMatch) endDate.setHours(endDate.getHours() + parseInt(hourMatch[1], 10));
-    if (minuteMatch) endDate.setMinutes(endDate.getMinutes() + parseInt(minuteMatch[1], 10));
+    return endDate;
   }
-
-  return endDate;
-}
-
 
   const formatDate = (date) =>
     date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
@@ -221,7 +221,6 @@ function importExamToGoogleCalendar(exam) {
 
   window.open(googleCalendarURL, '_blank');
 }
-
 
 function convertTo24HourFormat(timeString) {
   const timeMap = {
@@ -249,11 +248,10 @@ function convertTo24HourFormat(timeString) {
     return `${hours}:${minutes}`;
   }
 
-  // Handle "Noon" or "Midnight" specifically
   if (timeString === "Noon") return "12:00";
   if (timeString === "Midnight") return "00:00";
 
-  return timeString;  // Return unchanged if it's a valid format
+  return timeString;
 }
 
 function convertToDate(examDate, examStart) {
@@ -265,8 +263,6 @@ function convertToDate(examDate, examStart) {
   date.setSeconds(0);
   return date;
 }
-
-
 
 onMounted(drawCalendar)
 watch(currentDate, drawCalendar)
@@ -285,7 +281,6 @@ watch(selectedDate, drawCalendar)
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 16px;
   color: #333;
-
 }
 
 .calendar-wrapper {
@@ -313,7 +308,6 @@ watch(selectedDate, drawCalendar)
   white-space: nowrap;
 }
 
-
 .calendar-header button {
   font-size: 28px;
   padding: 5px 15px;
@@ -333,8 +327,6 @@ watch(selectedDate, drawCalendar)
   align-items: flex-start;
 }
 
-
-
 /* Sidebar styling */
 .side-panel {
   width: 300px;
@@ -342,10 +334,10 @@ watch(selectedDate, drawCalendar)
   background-color: #f9f9f9;
   border-left: 1px solid #ddd;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  position: fixed; /* Change from absolute to fixed */
-  top: 80px; /* Offset from top to avoid overlap */
+  position: fixed;
+  top: 100px;
   right: 0;
-  bottom: 0; /* Stretch to bottom */
+  bottom: 0;
   overflow-y: auto;
   z-index: 1001;
 }
@@ -358,6 +350,12 @@ watch(selectedDate, drawCalendar)
   margin-bottom: 20px;
 }
 
+/* Remove dots from the exam list */
+.side-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
 /* Exam title styling */
 .exam-title {
@@ -381,7 +379,6 @@ li {
   border-radius: 6px;
   background: #fff;
 }
-
 
 /* Button for importing to Google Calendar */
 button {
@@ -409,7 +406,7 @@ button:active {
   background-color: #2a66c2;
 }
 
-/* Add a container for the import button outside of the side panel */
+/* Import button container styles (if needed) */
 .import-button-container {
   padding: 20px;
   text-align: center;
