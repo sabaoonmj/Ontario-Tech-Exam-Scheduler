@@ -15,6 +15,8 @@
               <div class="exam-title">{{ exam.title }}</div>
               <div class="exam-start"><strong>Time:</strong> {{ exam.start }}</div>
               <div class="exam-room"><strong>Location:</strong> {{ exam.room }}</div>
+              <!-- Add a button for each exam -->
+              <button @click="importExamToGoogleCalendar(exam)">Import to Google Calendar</button>
             </li>
           </ul>
         </div>
@@ -22,11 +24,6 @@
           No exams scheduled for this day.
         </div>
       </div>
-    </div>
-    
-    <!-- Move the button here, outside the side-panel -->
-    <div class="import-button-container">
-      <button @click="importAllToGoogleCalendar">Import All to Google Calendar</button>
     </div>
   </div>
 </template>
@@ -175,31 +172,27 @@ function nextMonth() {
   selectedExams.value = []
 }
 
-function importAllToGoogleCalendar() {
-  console.log('Importing exams to Google Calendar...');
+// Function for importing a specific exam to Google Calendar
+function importExamToGoogleCalendar(exam) {
+  console.log('Importing exam to Google Calendar...');
 
-  selectedExams.value.forEach((exam) => {
-    if (!exam.start) {
-      console.error('Exam start time is missing for:', exam);
-      return; 
-    }
+  if (!exam.start) {
+    console.error('Exam start time is missing for:', exam);
+    return; 
+  }
 
-    const startDateTime = convertToDate(exam.start);
+  const startDateTime = convertToDate(exam.start);
 
-    if (isNaN(startDateTime)) {
-      console.error('Invalid date:', exam.start);
-      return;
-    }
+  if (isNaN(startDateTime)) {
+    console.error('Invalid date:', exam.start);
+    return;
+  }
 
-    const formattedStartDate = startDateTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const formattedStartDate = startDateTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 
-    console.log('Exam:', exam);
-    console.log('Generated Google Calendar URL:', `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(exam.title)}&dates=${formattedStartDate}/${formattedStartDate}&details=${encodeURIComponent(exam.title)}&location=${encodeURIComponent(exam.room)}&sf=true&output=xml`);
+  const googleCalendarURL = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(exam.title)}&dates=${formattedStartDate}/${formattedStartDate}&details=${encodeURIComponent(exam.title)}&location=${encodeURIComponent(exam.room)}&sf=true&output=xml`;
 
-    const googleCalendarURL = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(exam.title)}&dates=${formattedStartDate}/${formattedStartDate}&details=${encodeURIComponent(exam.title)}&location=${encodeURIComponent(exam.room)}&sf=true&output=xml`;
-
-    window.open(googleCalendarURL, '_blank');
-  });
+  window.open(googleCalendarURL, '_blank');
 }
 
 function convertTo24HourFormat(timeString) {
@@ -255,25 +248,6 @@ watch(selectedDate, drawCalendar)
 </script>
 
 <style scoped>
-.import-button-container {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.import-button-container button {
-  padding: 10px 20px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.import-button-container button:hover {
-  background-color: #45a049;
-}
-
 .calendar-wrapper {
   display: flex;
   flex-direction: column;
@@ -322,30 +296,82 @@ watch(selectedDate, drawCalendar)
   border-radius: 12px;
 }
 
+/* Sidebar styling */
 .side-panel {
-  margin-left: 20px;
-  padding: 10px;
-  background: #fafafa;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  min-width: 200px;
+  width: 300px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-left: 1px solid #ddd;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  overflow-y: auto;
 }
 
-/* Remove dots from the exam list */
-.side-panel ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* Optional: Style for individual exam details */
-.side-panel li {
+/* Exam title styling */
+.exam-title {
+  font-weight: bold;
+  font-size: 16px;
   margin-bottom: 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
 }
 
-.side-panel li:last-child {
-  border-bottom: none;
+/* Exam start time and room */
+.exam-start,
+.exam-room {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+/* Button for importing to Google Calendar */
+button {
+  background-color: #4285f4;
+  color: white;
+  font-size: 14px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #357ae8;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:active {
+  background-color: #2a66c2;
+}
+
+/* Add a container for the import button outside of the side panel */
+.import-button-container {
+  padding: 20px;
+  text-align: center;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+}
+
+.import-button-container button {
+  background-color: #34a853;
+  width: 80%;
+  max-width: 250px;
+}
+
+.import-button-container button:hover {
+  background-color: #2e8e47;
+}
+
+.import-button-container button:active {
+  background-color: #267a3b;
 }
 </style>
