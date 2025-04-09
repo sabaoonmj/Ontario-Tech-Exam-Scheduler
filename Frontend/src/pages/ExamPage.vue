@@ -3,8 +3,8 @@
     <!-- Title -->
     <h1 class="text-3xl font-bold text-center mb-6">My Saved Exams</h1>
 
-    <!-- Exam list container -->
-    <div v-if="savedExams.length" class="table-container mt-8">
+    <!-- Table for PC -->
+    <div v-if="savedExams.length && !isMobile" class="table-container mt-8">
       <table class="exam-table">
         <thead>
           <tr>
@@ -43,13 +43,74 @@
       </table>
     </div>
 
-    <p v-else class="mt-8 text-center text-gray-500">You haven't saved any exams yet.</p>
+    <!-- Grid Layout for Mobile -->
+    <div v-if="savedExams.length && isMobile" class="exam-block-container mt-8">
+      <div v-for="exam in savedExams" :key="exam.crn" class="exam-block">
+        <div class="exam-detail">
+          <strong>Semester:</strong> {{ exam.semester }}
+        </div>
+        <div class="exam-detail">
+          <strong>Course:</strong> {{ exam.course }}
+        </div>
+        <div class="exam-detail">
+          <strong>Title:</strong> {{ exam.title }}
+        </div>
+        <div class="exam-detail">
+          <strong>CRN:</strong> {{ exam.crn }}
+        </div>
+        <div class="exam-detail">
+          <strong>Instructor:</strong> {{ exam.instructor }}
+        </div>
+        <div class="exam-detail">
+          <strong>Date:</strong> {{ exam.date }}
+        </div>
+        <div class="exam-detail">
+          <strong>Start:</strong> {{ exam.start }}
+        </div>
+        <div class="exam-detail">
+          <strong>Duration:</strong> {{ exam.duration }}
+        </div>
+        <div class="exam-detail">
+          <strong>Room:</strong> {{ exam.room }}
+        </div>
+        <div class="exam-detail">
+          <strong>Location:</strong> {{ exam.location }}
+        </div>
+        <div class="exam-detail">
+          <strong>Surname:</strong> {{ exam.surname }}
+        </div>
+        <button @click="removeExam(exam.crn)" class="remove-button">
+          <i class="fas fa-trash-alt"></i> Remove
+        </button>
+      </div>
+    </div>
+
+    <!-- No exams saved message -->
+    <p v-if="savedExams.length === 0" class="mt-8 text-center text-gray-500">
+      You haven't saved any exams yet.
+    </p>
   </div>
 </template>
 
 <script setup>
 import { useSavedExams } from '../composables/useSavedExams.js';
+import { ref, onMounted } from 'vue';
+
 const { savedExams, removeExam } = useSavedExams();
+
+// Ref to determine if the device is mobile
+const isMobile = ref(false);
+
+// Check the screen size on component mount
+const checkIfMobile = () => {
+  isMobile.value = window.innerWidth <= 768;
+};
+
+// Listen for window resizing to adjust screen size
+onMounted(() => {
+  checkIfMobile();
+  window.addEventListener('resize', checkIfMobile);
+});
 </script>
 
 <style scoped>
@@ -115,5 +176,44 @@ h1 {
 
 .remove-button i {
   margin-right: 5px;
+}
+
+/* Media Query for Mobile */
+@media (max-width: 768px) {
+  /* Show the block layout on mobile */
+  .exam-block-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  .exam-table {
+    display: none; /* Hide the table on mobile */
+  }
+
+  h1 {
+    font-size: 1.5rem; /* Smaller title font size on mobile */
+  }
+
+  .exam-block {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+    max-width: 400px;
+    width: 100%;
+  }
+
+  .remove-button {
+    font-size: 1rem;
+    padding: 6px 10px; /* Adjust padding for smaller screen */
+  }
+
+  .exam-block strong {
+    color: #0078c1;
+    font-weight: bold;
+  }
+
 }
 </style>

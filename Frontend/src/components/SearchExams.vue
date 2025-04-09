@@ -14,10 +14,12 @@
         />
       </div>
 
-      <!-- 📄 Results Table -->
+      <!-- 📄 Results Block -->
       <div v-if="filteredExams.length" class="mt-8">
         <h2 class="text-xl font-semibold mb-4 text-center">Results:</h2>
-        <div class="table-container">
+
+        <!-- Table for PC -->
+        <div class="table-container" v-if="!isMobile">
           <table class="exam-table">
             <thead>
               <tr>
@@ -32,8 +34,7 @@
                 <th>Room</th>
                 <th>Location</th>
                 <th>Surname</th>
-                
-                <th>Save</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -49,13 +50,52 @@
                 <td>{{ exam.room }}</td>
                 <td>{{ exam.location }}</td>
                 <td>{{ exam.surname }}</td>
-              
                 <td>
                   <button @click="handleAddExam(exam)" class="save-button">Save</button>
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- Grid Layout for Mobile -->
+        <div class="exam-block-container" v-else>
+          <div v-for="exam in filteredExams" :key="exam.id" class="exam-block">
+            <div class="exam-detail">
+              <strong>Semester:</strong> {{ exam.semester }}
+            </div>
+            <div class="exam-detail">
+              <strong>Course:</strong> {{ exam.course }}
+            </div>
+            <div class="exam-detail">
+              <strong>Title:</strong> {{ exam.title }}
+            </div>
+            <div class="exam-detail">
+              <strong>CRN:</strong> {{ exam.crn }}
+            </div>
+            <div class="exam-detail">
+              <strong>Instructor:</strong> {{ exam.instructor }}
+            </div>
+            <div class="exam-detail">
+              <strong>Date:</strong> {{ exam.date }}
+            </div>
+            <div class="exam-detail">
+              <strong>Start:</strong> {{ exam.start }}
+            </div>
+            <div class="exam-detail">
+              <strong>Duration:</strong> {{ exam.duration }}
+            </div>
+            <div class="exam-detail">
+              <strong>Room:</strong> {{ exam.room }}
+            </div>
+            <div class="exam-detail">
+              <strong>Location:</strong> {{ exam.location }}
+            </div>
+            <div class="exam-detail">
+              <strong>Surname:</strong> {{ exam.surname }}
+            </div>
+            <button @click="handleAddExam(exam)" class="save-button">Save</button>
+          </div>
         </div>
       </div>
 
@@ -68,6 +108,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
@@ -139,6 +180,16 @@ function handleAddExam(exam) {
     notificationVisible.value = false;
   }, 3000);
 }
+
+const isMobile = ref(false)
+
+onMounted(() => {
+  const checkScreen = () => {
+    isMobile.value = window.innerWidth < 768
+  }
+  checkScreen()
+  window.addEventListener('resize', checkScreen)
+})
 </script>
 
 <style scoped>
@@ -237,4 +288,66 @@ function handleAddExam(exam) {
   font-size: 16px;
   z-index: 1000;
 }
+
+/* Grid layout for mobile */
+.exam-block-container {
+  display: block;
+}
+
+.exam-block {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 20px;
+  max-width: 400px;
+}
+
+.exam-detail {
+  margin-bottom: 10px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+/* By default, hide exam block on large screens */
+.exam-block-container {
+  display: none;
+}
+
+/* Show table on larger screens */
+.table-container {
+  display: block;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .table-container {
+    display: none; /* Hide table on mobile */
+  }
+
+  .exam-block-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .exam-block {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+    max-width: 400px;
+    width: 100%;
+  }
+
+  .exam-block strong {
+    color: #0078c1;
+    font-weight: bold;
+  }
+}
+
+}
+
 </style>
