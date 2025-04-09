@@ -82,12 +82,16 @@ function drawCalendar() {
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   const firstDay = new Date(year, month, 1).getDay()
 
-  const svg = d3
-    .select(calendarContainer.value)
-    .html('')
-    .append('svg')
-    .attr('width', width)
-    .attr('height', height)
+ const totalRows = Math.ceil((daysInMonth + firstDay) / 7);
+const calculatedHeight = totalRows * cellSize + 80; 
+
+const svg = d3
+  .select(calendarContainer.value)
+  .html('')
+  .append('svg')
+  .attr('width', width)
+  .attr('height', calculatedHeight)
+
 
   const group = svg.append('g').attr('transform', `translate(20, 40)`)
 
@@ -248,27 +252,44 @@ watch(selectedDate, drawCalendar)
 </script>
 
 <style scoped>
+.calendar {
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 12px;
+  overflow: visible;
+  height: auto;
+  display: inline-block;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  color: #333;
+}
+
 .calendar-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 40px;
+  padding-bottom: 40px;
   font-family: 'Segoe UI', sans-serif;
 }
 
 .calendar-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  justify-content: center;
+  gap: 20px;
   margin-bottom: 16px;
+  flex-wrap: nowrap;
 }
 
 .calendar-header h2 {
   margin: 0;
   font-size: 28px;
+  white-space: nowrap;
 }
+
 
 .calendar-header button {
   font-size: 28px;
@@ -289,12 +310,7 @@ watch(selectedDate, drawCalendar)
   align-items: flex-start;
 }
 
-.calendar {
-  background: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  border-radius: 12px;
-}
+
 
 /* Sidebar styling */
 .side-panel {
@@ -303,26 +319,46 @@ watch(selectedDate, drawCalendar)
   background-color: #f9f9f9;
   border-left: 1px solid #ddd;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  top: 0;
+  position: fixed; /* Change from absolute to fixed */
+  top: 80px; /* Offset from top to avoid overlap */
   right: 0;
-  height: 100%;
+  bottom: 0; /* Stretch to bottom */
   overflow-y: auto;
+  z-index: 1001;
 }
+
+.side-panel h3 {
+  margin-top: 0;
+  font-size: 20px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 20px;
+}
+
 
 /* Exam title styling */
 .exam-title {
-  font-weight: bold;
+  font-weight: 600;
   font-size: 16px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  color: #333;
 }
 
-/* Exam start time and room */
 .exam-start,
 .exam-room {
   font-size: 14px;
-  margin-bottom: 8px;
+  color: #666;
+  margin-bottom: 4px;
 }
+
+li {
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+}
+
 
 /* Button for importing to Google Calendar */
 button {
