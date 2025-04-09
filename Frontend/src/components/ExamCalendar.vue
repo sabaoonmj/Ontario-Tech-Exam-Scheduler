@@ -63,17 +63,17 @@ const formattedSelectedDate = computed(() =>
 // Map saved exams data to our events array
 watch(savedExams, (newExams) => {
   events.value = newExams.map(exam => {
-    const examDate = new Date(exam.date)
-    const monthNumber = examDate.getMonth() + 1
-    const dayNumber = examDate.getDate()
-    const year = currentYear.value
-    return {
-      date: new Date(year, monthNumber - 1, dayNumber),
-      title: `${exam.course} Exam`,
-      start: exam.start,
-      room: exam.room
-    }
-  })
+  const examDate = new Date(exam.date);
+  const year = currentYear.value;
+  return {
+    date: new Date(year, examDate.getMonth(), examDate.getDate()),
+    title: `${exam.course} Exam`,
+    start: exam.start,
+    duration: exam.duration,
+    room: exam.room
+  };
+});
+
 }, { immediate: true })
 
 function drawCalendar() {
@@ -90,7 +90,8 @@ const svg = d3
   .html('')
   .append('svg')
   .attr('width', width)
-  .attr('height', calculatedHeight)
+  .attr('height', height + 100); // 💡 Increased height to prevent cutoff
+
 
 
   const group = svg.append('g').attr('transform', `translate(20, 40)`)
@@ -180,24 +181,47 @@ function nextMonth() {
 function importExamToGoogleCalendar(exam) {
   console.log('Importing exam to Google Calendar...');
 
-  if (!exam.start) {
-    console.error('Exam start time is missing for:', exam);
-    return; 
-  }
-
-  const startDateTime = convertToDate(exam.start);
-
-  if (isNaN(startDateTime)) {
-    console.error('Invalid date:', exam.start);
+  if (!exam.start || !exam.duration) {
+    console.error('Missing start time or duration for:', exam);
     return;
   }
 
-  const formattedStartDate = startDateTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const startDateTime = convertToDate(exam.date, exam.start); // Updated to use exam.date
+  const endDateTime = calculateEndTime(startDateTime, exam.duration);
 
-  const googleCalendarURL = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(exam.title)}&dates=${formattedStartDate}/${formattedStartDate}&details=${encodeURIComponent(exam.title)}&location=${encodeURIComponent(exam.room)}&sf=true&output=xml`;
+  if (isNaN(startDateTime) || isNaN(endDateTime)) {
+    console.error('Invalid start or end date:', exam.start, exam.duration);
+    return;
+  }
+
+  function calculateEndTime(startDate, duration) {
+  const endDate = new Date(startDate);
+
+  // Try to extract hours and minutes from duration string
+  const hourMatch = duration.match(/(\d+)\s*hour/);
+  const minuteMatch = duration.match(/(\d+)\s*min|minute/);
+  const colonMatch = duration.match(/(\d+):(\d+)/); // e.g., "2:30"
+
+  if (colonMatch) {
+    endDate.setHours(endDate.getHours() + parseInt(colonMatch[1], 10));
+    endDate.setMinutes(endDate.getMinutes() + parseInt(colonMatch[2], 10));
+  } else {
+    if (hourMatch) endDate.setHours(endDate.getHours() + parseInt(hourMatch[1], 10));
+    if (minuteMatch) endDate.setMinutes(endDate.getMinutes() + parseInt(minuteMatch[1], 10));
+  }
+
+  return endDate;
+}
+
+
+  const formatDate = (date) =>
+    date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+  const googleCalendarURL = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(exam.title)}&dates=${formatDate(startDateTime)}/${formatDate(endDateTime)}&details=${encodeURIComponent(exam.title)}&location=${encodeURIComponent(exam.room)}&sf=true&output=xml`;
 
   window.open(googleCalendarURL, '_blank');
 }
+
 
 function convertTo24HourFormat(timeString) {
   const timeMap = {
@@ -232,18 +256,16 @@ function convertTo24HourFormat(timeString) {
   return timeString;  // Return unchanged if it's a valid format
 }
 
-function convertToDate(examStart) {
+function convertToDate(examDate, examStart) {
   const timeString = convertTo24HourFormat(examStart);
-  const date = new Date();
-  
-  // Set today's date with the converted time
-  const [hours, minutes] = timeString.split(":");
-  date.setHours(hours);
-  date.setMinutes(minutes);
+  const [hours, minutes] = timeString.split(':');
+  const date = new Date(examDate);
+  date.setHours(parseInt(hours));
+  date.setMinutes(parseInt(minutes));
   date.setSeconds(0);
-  
   return date;
 }
+
 
 
 onMounted(drawCalendar)
@@ -263,6 +285,7 @@ watch(selectedDate, drawCalendar)
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 16px;
   color: #333;
+
 }
 
 .calendar-wrapper {
