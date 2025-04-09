@@ -23,15 +23,20 @@
         </div>
       </div>
     </div>
+    
+    <!-- Move the button here, outside the side-panel -->
+    <div class="import-button-container">
+      <button @click="importAllToGoogleCalendar">Import All to Google Calendar</button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import * as d3 from 'd3'
 import { useSavedExams } from '../composables/useSavedExams.js'
 
-const { savedExams } = useSavedExams() // Fetches the saved exams data
+const { savedExams } = useSavedExams() // Fetch saved exams data
 
 const calendarContainer = ref(null)
 const currentDate = ref(new Date())
@@ -48,10 +53,7 @@ const monthName = computed(() =>
   currentDate.value.toLocaleString('default', { month: 'long' })
 )
 
-// Reactive variable to store the calendar events dynamically
-const events = ref([])
-
-// New reactive variables for the selected date and its exams
+const events = ref([]) // Store event data for the calendar
 const selectedDate = ref(null)
 const selectedExams = ref([])
 
@@ -61,14 +63,13 @@ const formattedSelectedDate = computed(() =>
     : ''
 )
 
-// Map saved exams data to our events array using the current year.
-// Now we use exam.start and exam.room
+// Map saved exams data to our events array
 watch(savedExams, (newExams) => {
   events.value = newExams.map(exam => {
     const examDate = new Date(exam.date)
-    const monthNumber = examDate.getMonth() + 1 // JavaScript month is 0-indexed, so add 1
+    const monthNumber = examDate.getMonth() + 1
     const dayNumber = examDate.getDate()
-    const year = currentYear.value // Use the current year
+    const year = currentYear.value
     return {
       date: new Date(year, monthNumber - 1, dayNumber),
       title: `${exam.course} Exam`,
@@ -124,7 +125,6 @@ function drawCalendar() {
       .append('g')
       .attr('cursor', hasEvent ? 'pointer' : 'default')
       .on('click', function(event) {
-        // Update the selected day and its exams (green highlight + side panel)
         selectedDate.value = dateObj
         selectedExams.value = events.value.filter(e => e.date.toDateString() === dateObj.toDateString())
       })
@@ -137,7 +137,6 @@ function drawCalendar() {
       .attr('height', cellSize - 10)
       .attr('rx', 10)
       .attr('ry', 10)
-      // If the cell is selected, highlight it green; otherwise show today's or default color
       .attr('fill', isSelected ? '#81c784' : (isToday ? '#ffe082' : '#f5f5f5'))
       .attr('stroke', '#ccc')
 
@@ -149,7 +148,6 @@ function drawCalendar() {
       .attr('font-size', '18px')
       .attr('fill', '#333')
 
-    // Mark cell with a small circle if there's an event
     if (hasEvent) {
       cellGroup
         .append('circle')
@@ -177,12 +175,105 @@ function nextMonth() {
   selectedExams.value = []
 }
 
+function importAllToGoogleCalendar() {
+  console.log('Importing exams to Google Calendar...');
+
+  selectedExams.value.forEach((exam) => {
+    if (!exam.start) {
+      console.error('Exam start time is missing for:', exam);
+      return; 
+    }
+
+    const startDateTime = convertToDate(exam.start);
+
+    if (isNaN(startDateTime)) {
+      console.error('Invalid date:', exam.start);
+      return;
+    }
+
+    const formattedStartDate = startDateTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+    console.log('Exam:', exam);
+    console.log('Generated Google Calendar URL:', `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(exam.title)}&dates=${formattedStartDate}/${formattedStartDate}&details=${encodeURIComponent(exam.title)}&location=${encodeURIComponent(exam.room)}&sf=true&output=xml`);
+
+    const googleCalendarURL = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(exam.title)}&dates=${formattedStartDate}/${formattedStartDate}&details=${encodeURIComponent(exam.title)}&location=${encodeURIComponent(exam.room)}&sf=true&output=xml`;
+
+    window.open(googleCalendarURL, '_blank');
+  });
+}
+
+function convertTo24HourFormat(timeString) {
+  const timeMap = {
+    "Noon": "12:00",
+    "Midnight": "00:00",
+    "AM": "AM",
+    "PM": "PM"
+  };
+
+  if (timeString.includes("p.m.") || timeString.includes("PM")) {
+    let time = timeString.split(" ")[0];  // Extract the time part
+    let [hours, minutes] = time.split(":");
+
+    if (parseInt(hours) < 12) {
+      hours = parseInt(hours) + 12; // Convert PM hours
+    }
+    return `${hours}:${minutes}`;
+  } else if (timeString.includes("a.m.") || timeString.includes("AM")) {
+    let time = timeString.split(" ")[0]; // Extract the time part
+    let [hours, minutes] = time.split(":");
+    
+    if (parseInt(hours) === 12) {
+      hours = "00";  // Convert 12 AM to 00
+    }
+    return `${hours}:${minutes}`;
+  }
+
+  // Handle "Noon" or "Midnight" specifically
+  if (timeString === "Noon") return "12:00";
+  if (timeString === "Midnight") return "00:00";
+
+  return timeString;  // Return unchanged if it's a valid format
+}
+
+function convertToDate(examStart) {
+  const timeString = convertTo24HourFormat(examStart);
+  const date = new Date();
+  
+  // Set today's date with the converted time
+  const [hours, minutes] = timeString.split(":");
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  date.setSeconds(0);
+  
+  return date;
+}
+
+
 onMounted(drawCalendar)
 watch(currentDate, drawCalendar)
 watch(selectedDate, drawCalendar)
 </script>
 
 <style scoped>
+.import-button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.import-button-container button {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.import-button-container button:hover {
+  background-color: #45a049;
+}
+
 .calendar-wrapper {
   display: flex;
   flex-direction: column;

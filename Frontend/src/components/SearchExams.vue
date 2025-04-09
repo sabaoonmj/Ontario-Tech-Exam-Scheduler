@@ -12,7 +12,6 @@
           placeholder="Enter course code or CRN"
           class="search-input"
         />
-        <button @click="searchExams" class="search-button">Search</button>
       </div>
 
       <!-- 📄 Results Table -->
@@ -34,7 +33,7 @@
                 <th>Location</th>
                 <th>Surname</th>
                 
-                <th>Save</th> <!-- 💾 New header column -->
+                <th>Save</th>
               </tr>
             </thead>
             <tbody>
@@ -128,11 +127,6 @@ const filteredExams = computed(() => {
       exam.crn.includes(query)
   );
 });
-
-// Optional manual trigger function for searching exams
-function searchExams() {
-  // This could be tied to an event if you want manual triggering.
-}
 
 // Function to handle saving an exam and showing the notification
 function handleAddExam(exam) {
