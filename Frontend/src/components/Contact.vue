@@ -21,7 +21,7 @@
 import { ref } from 'vue'
 import emailjs from '@emailjs/browser'
 
-// Form fields
+//Add the form fields and sent status
 const name = ref('')
 const email = ref('')
 const message = ref('')
@@ -36,10 +36,10 @@ const sendMessage = () => {
   }
 
   emailjs.send(
-    'service_f7pznfp',     // Replace with your EmailJS service ID
-    'template_gzfn7yl',    // Replace with your EmailJS template ID
+    'service_f7pznfp',     
+    'template_gzfn7yl',    
     templateParams,
-    'UE1k4GAMae1eMVWrn'      // Replace with your EmailJS public key
+    'UE1k4GAMae1eMVWrn'      
   )
   .then(() => {
     sent.value = true
@@ -57,6 +57,7 @@ const sendMessage = () => {
 }
 </script>
 
+<!-- CSS styles for the contact page-->
 <style scoped>
 .contact-page {
   display: flex;
@@ -132,7 +133,6 @@ const sendMessage = () => {
   background-color: #d94e1a;
 }
 
-/* Confirmation Message */
 .confirmation-message {
   margin-top: 1rem;
   padding: 1rem;

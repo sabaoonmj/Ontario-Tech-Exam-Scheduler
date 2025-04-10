@@ -2,7 +2,6 @@
   <div class="app">
     <Topbar @updateTopbarHeight="updateTopbarHeight" />
     <div class="layout">
-      <!-- Apply margin-top dynamically based on topbar height, without the extra space -->
       <div class="main-content" :style="{ marginTop: topbarHeight }">
         <router-view />
       </div>
@@ -16,12 +15,13 @@ import Topbar from './components/Topbar.vue'
 
 const topbarHeight = ref('60px') // Default height for topbar
 
-// Update the height based on whether topbar is hovering
+// Update the height of the topbar if the user is hovering over it
 const updateTopbarHeight = (isHovering) => {
   topbarHeight.value = isHovering ? '90px' : '60px'
 }
 </script>
 
+<!-- CSS styles for the app -->
 <style lang="scss">
 :root {
   --primary: #4ade80;

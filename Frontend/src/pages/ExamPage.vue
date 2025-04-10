@@ -3,85 +3,88 @@
     <!-- Title -->
     <h1 class="text-3xl font-bold text-center mb-6">My Saved Exams</h1>
 
-    <!-- Table for PC -->
-    <div v-if="savedExams.length && !isMobile" class="table-container mt-8">
-      <table class="exam-table">
-        <thead>
-          <tr>
-            <th>Semester</th>
-            <th>Course</th>
-            <th>Title</th>
-            <th>CRN</th>
-            <th>Instructor</th>
-            <th>Date/Time</th>
-            <th>Duration</th>
-            <th>Room</th>
-            <th>Location</th>
-            <th>Surname</th>
-            <th>Remove</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="exam in savedExams" :key="exam.crn">
-            <td>{{ exam.semester }}</td>
-            <td>{{ exam.course }}</td>
-            <td>{{ exam.title }}</td>
-            <td>{{ exam.crn }}</td>
-            <td>{{ exam.instructor }}</td>
-            <td>{{ exam.date }} at {{ exam.start }}</td>
-            <td>{{ exam.duration }}</td>
-            <td>{{ exam.room }}</td>
-            <td>{{ exam.location }}</td>
-            <td>{{ exam.surname }}</td>
-            <td>
-              <button @click="removeExam(exam.crn)" class="remove-button">
-                <i class="fas fa-trash-alt"></i> <!-- Trash Icon -->
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
 
-    <!-- Grid Layout for Mobile -->
-    <div v-if="savedExams.length && isMobile" class="exam-block-container mt-8">
-      <div v-for="exam in savedExams" :key="exam.crn" class="exam-block">
-        <div class="exam-detail">
-          <strong>Semester:</strong> {{ exam.semester }}
+    <div v-if="savedExams.length" class="mt-8">
+      <!-- Table for PC -->
+      <div class="table-container" v-if="!isMobile" >
+        <table class="exam-table">
+          <thead>
+            <tr>
+              <th>Semester</th>
+              <th>Course</th>
+              <th>Title</th>
+              <th>CRN</th>
+              <th>Instructor</th>
+              <th>Date/Time</th>
+              <th>Duration</th>
+              <th>Room</th>
+              <th>Location</th>
+              <th>Surname</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="exam in savedExams" :key="exam.crn">
+              <td>{{ exam.semester }}</td>
+              <td>{{ exam.course }}</td>
+              <td>{{ exam.title }}</td>
+              <td>{{ exam.crn }}</td>
+              <td>{{ exam.instructor }}</td>
+              <td>{{ exam.date }} at {{ exam.start }}</td>
+              <td>{{ exam.duration }}</td>
+              <td>{{ exam.room }}</td>
+              <td>{{ exam.location }}</td>
+              <td>{{ exam.surname }}</td>
+              <td>
+                <button @click="removeExam(exam.crn)" class="remove-button">
+                  <i class="fas fa-trash-alt"></i> <!-- Trash Icon -->
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Grid Layout for Mobile -->
+      <div class="exam-block-container" v-else>
+        <div v-for="exam in savedExams" :key="exam.crn" class="exam-block">
+          <div class="exam-detail">
+            <strong>Semester:</strong> {{ exam.semester }}
+          </div>
+          <div class="exam-detail">
+            <strong>Course:</strong> {{ exam.course }}
+          </div>
+          <div class="exam-detail">
+            <strong>Title:</strong> {{ exam.title }}
+          </div>
+          <div class="exam-detail">
+            <strong>CRN:</strong> {{ exam.crn }}
+          </div>
+          <div class="exam-detail">
+            <strong>Instructor:</strong> {{ exam.instructor }}
+          </div>
+          <div class="exam-detail">
+            <strong>Date:</strong> {{ exam.date }}
+          </div>
+          <div class="exam-detail">
+            <strong>Start:</strong> {{ exam.start }}
+          </div>
+          <div class="exam-detail">
+            <strong>Duration:</strong> {{ exam.duration }}
+          </div>
+          <div class="exam-detail">
+            <strong>Room:</strong> {{ exam.room }}
+          </div>
+          <div class="exam-detail">
+            <strong>Location:</strong> {{ exam.location }}
+          </div>
+          <div class="exam-detail">
+            <strong>Surname:</strong> {{ exam.surname }}
+          </div>
+          <button @click="removeExam(exam.crn)" class="remove-button">
+            <i class="fas fa-trash-alt"></i> Remove
+          </button>
         </div>
-        <div class="exam-detail">
-          <strong>Course:</strong> {{ exam.course }}
-        </div>
-        <div class="exam-detail">
-          <strong>Title:</strong> {{ exam.title }}
-        </div>
-        <div class="exam-detail">
-          <strong>CRN:</strong> {{ exam.crn }}
-        </div>
-        <div class="exam-detail">
-          <strong>Instructor:</strong> {{ exam.instructor }}
-        </div>
-        <div class="exam-detail">
-          <strong>Date:</strong> {{ exam.date }}
-        </div>
-        <div class="exam-detail">
-          <strong>Start:</strong> {{ exam.start }}
-        </div>
-        <div class="exam-detail">
-          <strong>Duration:</strong> {{ exam.duration }}
-        </div>
-        <div class="exam-detail">
-          <strong>Room:</strong> {{ exam.room }}
-        </div>
-        <div class="exam-detail">
-          <strong>Location:</strong> {{ exam.location }}
-        </div>
-        <div class="exam-detail">
-          <strong>Surname:</strong> {{ exam.surname }}
-        </div>
-        <button @click="removeExam(exam.crn)" class="remove-button">
-          <i class="fas fa-trash-alt"></i> Remove
-        </button>
       </div>
     </div>
 
@@ -180,19 +183,15 @@ h1 {
 
 /* Media Query for Mobile */
 @media (max-width: 768px) {
-  /* Show the block layout on mobile */
+  .table-container {
+    display: none; /* Hide table on mobile */
+  }
+
   .exam-block-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-  }
-  .exam-table {
-    display: none; /* Hide the table on mobile */
-  }
-
-  h1 {
-    font-size: 1.5rem; /* Smaller title font size on mobile */
   }
 
   .exam-block {
@@ -207,7 +206,7 @@ h1 {
 
   .remove-button {
     font-size: 1rem;
-    padding: 6px 10px; /* Adjust padding for smaller screen */
+    padding: 6px 10px;
   }
 
   .exam-block strong {

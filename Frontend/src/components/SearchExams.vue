@@ -1,6 +1,6 @@
 <template>
   <div class="search-exams-page">
-    <!-- 🔎 Exam Search UI -->
+    <!-- Exam Search UI -->
     <div class="content">
       <h1 class="text-3xl font-bold text-center mb-6">Search Exams</h1>
 
@@ -14,7 +14,7 @@
         />
       </div>
 
-      <!-- 📄 Results Block -->
+      <!-- Results Block -->
       <div v-if="filteredExams.length" class="mt-8">
         <h2 class="text-xl font-semibold mb-4 text-center">Results:</h2>
 
@@ -113,7 +113,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import $ from 'jquery';
-window.$ = window.jQuery = $; // Ensure global jQuery support
+window.$ = window.jQuery = $;
 import { useSavedExams } from '../composables/useSavedExams.js';
 
 // Declare reactive variables for the search query and exams list
@@ -136,17 +136,16 @@ const isSameExam = (a, b) => {
 const searchQuery = ref('');
 const exams = ref([]);
 
-// Notification states
 const notificationVisible = ref(false);
 const notificationMessage = ref('');
 
-// Function to fetch exams using AJAX (with jQuery)
+// Function to fetch exams
 const fetchExams = () => {
   $.ajax({
-    url: 'http://localhost:8080/api/exams', // The backend API endpoint
-    type: 'GET', // Method type
+    url: 'http://localhost:8080/api/exams',
+    type: 'GET', 
     success: function(data) {
-      exams.value = data; // Assign fetched data to exams
+      exams.value = data; // Set the exams data to exams ref
     },
     error: function(error) {
       console.error('Error fetching exams:', error);
@@ -154,12 +153,12 @@ const fetchExams = () => {
   });
 };
 
-// Fetch exams when the component is mounted
+// Fetch exams
 onMounted(() => {
   fetchExams();
 });
 
-// Computed property to filter exams based on the search query
+// Function to filter exams based on the search query
 const filteredExams = computed(() => {
   const query = searchQuery.value.toLowerCase();
   return exams.value.filter(
@@ -169,11 +168,11 @@ const filteredExams = computed(() => {
   );
 });
 
-// Function to handle saving an exam and showing the notification
+// Function to handle saving an exam and show the notification
 function handleAddExam(exam) {
-  addExam(exam); // Save the exam
+  addExam(exam); //Save exam
   notificationMessage.value = `You have added the exam "${exam.title}" to your saved exams. Good Luck with your exams!`; 
-  notificationVisible.value = true; // Show the notification
+  notificationVisible.value = true;
 
   // Hide the notification after 3 seconds
   setTimeout(() => {
@@ -228,7 +227,7 @@ onMounted(() => {
 }
 
 .saved-row {
-  background-color: #d4edda !important; /* light green */
+  background-color: #d4edda !important;
 }
 
 .table-container {
@@ -275,7 +274,6 @@ onMounted(() => {
   background-color: #45a049;
 }
 
-/* Notification styles */
 .notification {
   position: fixed;
   top: 20px;
@@ -289,7 +287,6 @@ onMounted(() => {
   z-index: 1000;
 }
 
-/* Grid layout for mobile */
 .exam-block-container {
   display: block;
 }
@@ -308,28 +305,17 @@ onMounted(() => {
 }
 
 /* Mobile Styles */
-@media (max-width: 768px) {
-/* By default, hide exam block on large screens */
-.exam-block-container {
-  display: none;
-}
-
-/* Show table on larger screens */
-.table-container {
-  display: block;
-}
-
 /* Mobile Styles */
 @media (max-width: 768px) {
-  .table-container {
-    display: none; /* Hide table on mobile */
-  }
-
   .exam-block-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
+  }
+
+  .table-container {
+    display: none;
   }
 
   .exam-block {
@@ -348,6 +334,5 @@ onMounted(() => {
   }
 }
 
-}
 
 </style>

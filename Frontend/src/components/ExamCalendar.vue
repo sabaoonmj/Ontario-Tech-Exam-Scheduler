@@ -39,7 +39,6 @@ const calendarContainer = ref(null)
 const currentDate = ref(new Date())
 const today = new Date()
 
-// You might want to adjust these dimensions or compute them dynamically based on container size.
 const width = 700
 const height = 500
 const cellSize = 80
@@ -50,8 +49,8 @@ const currentMonth = computed(() => currentDate.value.getMonth())
 const monthName = computed(() =>
   currentDate.value.toLocaleString('default', { month: 'long' })
 )
-
-const events = ref([]) // Store event data for the calendar
+ //Store event data for the calendar
+const events = ref([]) 
 const selectedDate = ref(null)
 const selectedExams = ref([])
 
@@ -61,7 +60,7 @@ const formattedSelectedDate = computed(() =>
     : ''
 )
 
-// Map saved exams data to our events array
+//Map saved exams data to our events array
 watch(savedExams, (newExams) => {
   events.value = newExams.map(exam => {
     const examDate = new Date(exam.date);
@@ -76,6 +75,7 @@ watch(savedExams, (newExams) => {
   });
 }, { immediate: true })
 
+//function draawing calendar
 function drawCalendar() {
   const year = currentYear.value
   const month = currentMonth.value
@@ -90,11 +90,11 @@ function drawCalendar() {
     .html('')
     .append('svg')
     .attr('width', width)
-    .attr('height', height + 100); // Increased height to prevent cutoff
+    .attr('height', height + 100); 
 
   const group = svg.append('g').attr('transform', `translate(20, 40)`)
 
-  // Weekday labels
+  //Weekday labels
   group
     .selectAll('text.day-label')
     .data(daysOfWeek)
@@ -107,7 +107,6 @@ function drawCalendar() {
     .attr('fill', '#555')
     .attr('font-weight', 'bold')
 
-  // Create each day cell
   for (let i = 0; i < daysInMonth; i++) {
     const day = i + 1
     const col = (i + firstDay) % 7
@@ -181,7 +180,7 @@ function nextMonth() {
   selectedExams.value = []
 }
 
-// Function for importing a specific exam to Google Calendar
+//importing a specific exam to Google Calendar
 function importExamToGoogleCalendar(exam) {
   console.log('Importing exam to Google Calendar...');
 
@@ -198,6 +197,7 @@ function importExamToGoogleCalendar(exam) {
     return;
   }
 
+  //calculate end time
   function calculateEndTime(startDate, duration) {
     const endDate = new Date(startDate);
     const hourMatch = duration.match(/(\d+)\s*hour/);
@@ -222,24 +222,25 @@ function importExamToGoogleCalendar(exam) {
 
   window.open(googleCalendarURL, '_blank');
 }
-
+//converting to 24 hour format 
 function convertTo24HourFormat(timeString) {
-  // Updated conversion using standard parsing with zero padding.
   if (timeString.includes("p.m.") || timeString.includes("PM")) {
-    let time = timeString.split(" ")[0]; // Extract the time part
+    let time = timeString.split(" ")[0]; 
     let [hours, minutes] = time.split(":");
     hours = parseInt(hours);
+    //converting pm hours
     if (hours < 12) {
-      hours += 12; // Convert PM hours
+      hours += 12; 
     }
     const paddedHours = hours.toString().padStart(2, "0");
     return `${paddedHours}:${minutes}`;
   } else if (timeString.includes("a.m.") || timeString.includes("AM")) {
-    let time = timeString.split(" ")[0]; // Extract the time part
+    let time = timeString.split(" ")[0]; 
     let [hours, minutes] = time.split(":");
     hours = parseInt(hours);
+    //Converting 12 AM to 00
     if (hours === 12) {
-      hours = 0;  // Convert 12 AM to 00
+      hours = 0;  
     }
     const paddedHours = hours.toString().padStart(2, "0");
     return `${paddedHours}:${minutes}`;
@@ -250,7 +251,7 @@ function convertTo24HourFormat(timeString) {
 
   return timeString;
 }
-
+//converting to date
 function convertToDate(examDate, examStart) {
   const timeString = convertTo24HourFormat(examStart);
   const [hours, minutes] = timeString.split(':');
@@ -267,6 +268,7 @@ watch(selectedDate, drawCalendar)
 </script>
 
 <style scoped>
+/*calendar*/
 .calendar {
   background: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -319,7 +321,6 @@ watch(selectedDate, drawCalendar)
   background-color: #ddd;
 }
 
-/* Updated layout to center calendar */
 .calendar-and-sidebar {
   display: flex;
   align-items: center;
@@ -328,7 +329,7 @@ watch(selectedDate, drawCalendar)
   max-width: 1000px;
 }
 
-/* Sidebar styling for desktop */
+/* Sidebar */
 .side-panel {
   width: 300px;
   padding: 20px;
@@ -343,7 +344,6 @@ watch(selectedDate, drawCalendar)
   z-index: 1001;
 }
 
-/* Remove dots from the exam list */
 .side-panel ul {
   list-style: none;
   padding: 0;
@@ -358,6 +358,7 @@ watch(selectedDate, drawCalendar)
   margin-bottom: 20px;
 }
 
+/*exam*/
 .exam-title {
   font-weight: 600;
   font-size: 16px;
@@ -380,7 +381,7 @@ li {
   background: #fff;
 }
 
-/* Button for importing to Google Calendar */
+/*importing google calednar button */
 button {
   background-color: #4285f4;
   color: white;
@@ -406,7 +407,6 @@ button:active {
   background-color: #2a66c2;
 }
 
-/* Import button container styles (if needed) */
 .import-button-container {
   padding: 20px;
   text-align: center;
@@ -417,13 +417,13 @@ button:active {
   width: 100%;
 }
 
-/* Responsive adjustments */
 @media (max-width: 1024px) {
   .calendar-and-sidebar {
     flex-direction: column;
     align-items: center;
   }
-  /* Make the side panel appear below the calendar on small screens */
+
+  /*adjusting side panel for small screens */
   .side-panel {
     position: relative;
     top: auto;

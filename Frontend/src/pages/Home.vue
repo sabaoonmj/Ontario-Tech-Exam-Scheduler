@@ -10,7 +10,7 @@
     <!-- Blue Overlay -->
     <div class="overlay"></div>
 
-    <!-- Content -->
+    <!-- Content of the Page-->
     <div class="hero-container">
       <div class="hero-text">
         <h1 class="hero-welcome animate-fade-in-up delay-1">Welcome To</h1>
@@ -27,6 +27,7 @@
   </div>
 </template>
 
+<!-- CSS styles for the Home page-->
 <style scoped>
 .hero-section {
   position: relative;
@@ -38,7 +39,6 @@
   padding: 2rem;
 }
 
-/* Slideshow Container */
 .slideshow {
   position: absolute;
   inset: 0;
@@ -86,7 +86,6 @@
   }
 }
 
-/* Blue overlay filter */
 .overlay {
   content: '';
   position: absolute;
@@ -95,7 +94,6 @@
   z-index: 1;
 }
 
-/* Main content above overlay */
 .hero-container {
   position: relative;
   z-index: 2;
@@ -147,7 +145,6 @@
   background-color: #ea580c;
 }
 
-/* Text animations */
 @keyframes fadeInUp {
   0% {
     opacity: 0;

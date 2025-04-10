@@ -7,17 +7,17 @@
       @mouseenter="isHovering = true"
       @mouseleave="isHovering = false"
     >
-      <!-- Left: Logo (clickable now!) -->
+      <!--Logo -->
       <router-link to="/" class="navbar-logo">
         <img :src="logoURL" alt="OT Logo" />
       </router-link>
 
-      <!-- Hamburger (mobile only) -->
+      <!-- Hamburger -->
       <div class="hamburger" @click="toggleSidebar">
         <i class="fas fa-bars"></i>
       </div>
 
-      <!-- Center Icons (desktop only) -->
+      <!-- Center Icons -->
       <div class="navbar-icons desktop-only">
         <router-link to="/" class="icon-link" exact>
           <i class="fas fa-home"></i>
@@ -37,15 +37,15 @@
         </router-link>
       </div>
 
-      <!-- Right: Button (desktop only) -->
+      <!-- Button -->
       <div class="navbar-button-wrap desktop-only">
         <router-link to="/exams">
-          <button class="navbar-button">VIEW EXAMS</button>
+          <button class="navbar-button">MY EXAMS</button>
         </router-link>
       </div>
     </div>
 
-    <!-- Sidebar Drawer (mobile) -->
+    <!-- Sidebar Drawer -->
     <div class="sidebar" :class="{ open: sidebarOpen }">
       <div class="sidebar-header">
         <img :src="logoURL" alt="OT Logo" class="sidebar-logo" />
@@ -64,7 +64,7 @@
         <i class="fas fa-envelope"></i> Contact
       </router-link>
       <router-link to="/exams" class="sidebar-link" @click="toggleSidebar">
-        <button class="navbar-button">VIEW EXAMS</button>
+        <button class="navbar-button">MY EXAMS</button>
       </router-link>
     </div>
 
@@ -79,20 +79,21 @@ import logoURL from '../assets/logo.png'
 
 const isHovering = ref(false)
 const sidebarOpen = ref(false)
-
+ 
 const emit = defineEmits(['updateTopbarHeight'])
 
 watch(isHovering, (newValue) => {
   emit('updateTopbarHeight', newValue)
 })
 
+// Function to handle the sidebar toggle
 function toggleSidebar() {
   sidebarOpen.value = !sidebarOpen.value
 }
 </script>
 
+<!-- CSS styles for the Topbar page-->
 <style scoped>
-/* Topbar */
 .topbar {
   background-color: var(--future-blue);
   color: white;
@@ -123,7 +124,6 @@ function toggleSidebar() {
   cursor: pointer;
 }
 
-/* Desktop only */
 .desktop-only {
   display: flex;
 }
@@ -187,7 +187,7 @@ function toggleSidebar() {
   color:  #f97316;
 }
 
-/* Sidebar Styles */
+/* Styles for the Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
@@ -253,7 +253,7 @@ function toggleSidebar() {
   z-index: 1050;
 }
 
-/* Responsive */
+/* Make it so that it displays differentlty for Mobile and PC view */
 @media (max-width: 768px) {
   .hamburger {
     display: block;

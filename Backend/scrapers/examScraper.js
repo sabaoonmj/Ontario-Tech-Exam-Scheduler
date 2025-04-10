@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 
+// This function scrapes the exam schedule from the Ontario Tech University website
 async function scrapeExams(courseCodeFilter = null, crnFilter = null) {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
