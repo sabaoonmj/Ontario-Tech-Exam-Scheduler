@@ -247,7 +247,6 @@ function convertTo24HourFormat(timeString) {
   }
 
   if (timeString === "Noon") return "12:00";
-  if (timeString === "Midnight") return "00:00";
 
   return timeString;
 }
