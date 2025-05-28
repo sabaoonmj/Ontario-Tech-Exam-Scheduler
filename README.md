@@ -34,8 +34,8 @@ It enables users to:
 ---
 
 ## 🚀 Live Demo
+👉 [View Live Demo](./intro.mp4)
 
-https://github.com/user-attachments/assets/e33de972-0ca3-4fdc-8eeb-a29635bafa2f
 ---
 
 ## ⚙️ Installation
