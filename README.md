@@ -134,12 +134,12 @@ We welcome contributions! To contribute:
 
 ## 📬 Contact
 **Group Members**:
-- Yousaf Jan  
-- Sabaoon Mohammad Jamil 
-- Yoosuf Mohamed Kamal
-- Rahil Haque 
-- Aakash Harendran
-- Abdul Wasay Aamir
+- Yousaf Jan - yousaf.asimjan@gmail.com  
+- Sabaoon Mohammad Jamil - sabaoonmj@gmail.com
+- Yoosuf Mohamed Kamal - yoosufmohamedkamal@gmail.com
+- Rahil Haque - rahil.haq04@gmail.com
+- Aakash Harendran - aakashharen@gmail.com
+- Abdul Wasay Aamir - wasayaamir5@gmail.com
 
 Feel free to reach out if you have any questions or suggestions!
 ---
